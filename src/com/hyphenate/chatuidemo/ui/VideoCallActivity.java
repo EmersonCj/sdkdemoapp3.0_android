@@ -346,6 +346,7 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
 
                                 @Override
                                 public void run() {
+                                    removeCallStateListener();
                                     saveCallRecord();
                                     Animation animation = new AlphaAnimation(1.0f, 0.0f);
                                     animation.setDuration(1200);
@@ -386,10 +387,10 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
                             } else if (fError == CallError.ERROR_NORESPONSE) {
                                 callingState = CallingState.NO_RESPONSE;
                                 callStateTextView.setText(s5);
-                            }else if (fError == CallError.ERROR_LOCAL_VERSION_SMALLER || fError == CallError.ERROR_PEER_VERSION_SMALLER){
+                            } else if (fError == CallError.ERROR_LOCAL_VERSION_SMALLER || fError == CallError.ERROR_PEER_VERSION_SMALLER){
                                 callingState = CallingState.VERSION_NOT_SAME;
                                 callStateTextView.setText(R.string.call_version_inconsistent);
-                            }  else {
+                            } else {
                                 if (isRefused) {
                                     callingState = CallingState.REFUSED;
                                     callStateTextView.setText(s10);
@@ -429,6 +430,10 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
             }
         };
         EMClient.getInstance().callManager().addCallStateChangeListener(callStateListener);
+    }
+    
+    void removeCallStateListener() {
+        EMClient.getInstance().callManager().removeCallStateChangeListener(callStateListener);
     }
 
     @Override
@@ -524,9 +529,8 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
         default:
             break;
         }
-
     }
-
+    
     @Override
     protected void onDestroy() {
         DemoHelper.getInstance().isVideoCalling = false;
